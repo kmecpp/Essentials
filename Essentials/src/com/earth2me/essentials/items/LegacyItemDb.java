@@ -163,13 +163,24 @@ public class LegacyItemDb extends AbstractItemDb {
             }
         }
 
+        boolean backup = false;
+        if (itemid < 1) {
+            Material matFromName = Material.valueOf(itemname.toUpperCase());
+            if (matFromName != null) {
+                itemid = matFromName.getId();
+                backup = true;
+            }
+        }
+
         if (itemid < 1) {
             throw new Exception(tl("unknownItemName", itemname));
         }
-
-        ItemData data = legacyIds.get(itemid);
-        if (data == null) {
-            throw new Exception(tl("unknownItemId", itemid));
+        
+        if (!backup) {
+            ItemData data = legacyIds.get(itemid);
+            if (data == null) {
+                throw new Exception(tl("unknownItemId", itemid));
+            }
         }
 
         Material mat = getFromLegacy(itemid, (byte) metaData);
